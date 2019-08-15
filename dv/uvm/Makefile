@@ -31,11 +31,12 @@ VERBOSE    		:=
 ITERATIONS 		:= 0
 # LSF CMD
 LSF_CMD    		:=
-
+# Generator timeout limit in seconds
+TIMEOUT       := 1800
 # Privileged CSR YAML description file
 CSR_FILE			:= ${DV_DIR}/riscv_dv_extension/csr_description.yaml
 # Pass/fail signature address at the end of test
-END_SIGNATURE_ADDR	:= 0x8ffffffc
+END_SIGNATURE_ADDR	:= 8ffffffc
 # Value written to END_SIGNATURE_ADDR that indicates test success
 PASS_VAL      := 0x1
 # Value written to END_SIGNATURE_ADDR that indicates test failure
@@ -65,7 +66,7 @@ endif
 # Options used for privileged CSR test generation
 CSR_OPTS=--csr_yaml=${CSR_FILE} \
          --isa=${ISA} \
-         --end_signature_addr=${END_SIGNATURE_ADDR}
+         --end_signature_addr=0x${END_SIGNATURE_ADDR}
 
 # Generate random instructions
 .SILENT gen:
@@ -74,6 +75,7 @@ CSR_OPTS=--csr_yaml=${CSR_FILE} \
 	python3 ./run.py \
      --o=${OUT}/instr_gen ${GEN_OPTS} \
      --steps=gen \
+     --gen_timeout=${TIMEOUT} \
      --lsf_cmd="${LSF_CMD}" \
      ${COMMON_OPTS} \
      ${CSR_OPTS} \
@@ -89,6 +91,7 @@ gcc_compile:
      --o=${OUT}/instr_gen ${GEN_OPTS} \
      --steps=gcc_compile \
      ${COMMON_OPTS} \
+     --gcc_opts=-mno-strict-align \
      --isa=${ISA} \
      --mabi=ilp32
 
