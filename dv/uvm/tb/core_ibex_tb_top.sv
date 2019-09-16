@@ -5,11 +5,11 @@
 module core_ibex_tb_top;
 
   import uvm_pkg::*;
+  import core_ibex_test_pkg::*;
 
   logic clk;
   logic rst_n;
   logic fetch_enable;
-  logic debug_req;
 
   clk_if ibex_clk_if(.clk(clk));
   irq_if irq_vif();
@@ -25,12 +25,11 @@ module core_ibex_tb_top;
     .test_en_i(1'b1),
     .hart_id_i(32'b0),
     .boot_addr_i(`BOOT_ADDR), // align with spike boot address
-    .debug_req_i(debug_req),
-    .irq_software_i(irq_if.irq_software),
-    .irq_timer_i(irq_if.irq_timer),
-    .irq_external_i(irq_if.irq_external),
-    .irq_fast_i(irq_if.irq_fast),
-    .irq_nm_i(irq_if.irq_nm),
+    .irq_software_i(irq_vif.irq_software),
+    .irq_timer_i(irq_vif.irq_timer),
+    .irq_external_i(irq_vif.irq_external),
+    .irq_fast_i(irq_vif.irq_fast),
+    .irq_nm_i(irq_vif.irq_nm),
     .fetch_enable_i(dut_if.fetch_enable),
     .debug_req_i(dut_if.debug_req)
   );
